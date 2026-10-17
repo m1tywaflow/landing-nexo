@@ -6,7 +6,7 @@ A modern, minimal landing page showcasing Nexo — a communication platform for 
 
 Designed with a clean interface and a dark visual style to reflect Nexo's identity and highlight its key features.
 
-🌐 Live Demo: [nexo-landing-taupe.vercel.app]([https://nexo-landing-taupe.vercel.app/](https://landing-nexo-one.vercel.app/))
+🌐 Live Demo: [nexo-landing-taupe.vercel.app]https://landing-nexo-one.vercel.app/
 
 ## Tech Stack
 
