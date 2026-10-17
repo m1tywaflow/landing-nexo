@@ -1,12 +1,12 @@
 # Nexo Landing
 
-The official landing page for Nexo.
+**The official landing page for Nexo.**
 
 A modern, minimal landing page showcasing Nexo — a communication platform for messaging, communities, voice & video calls, and more.
 
 Designed with a clean interface and a dark visual style to reflect Nexo's identity and highlight its key features.
 
-🌐 Live Demo: [nexo-landing-taupe.vercel.app]https://landing-nexo-one.vercel.app/
+🌐 **Live Demo:** [nexo-landing-one.vercel.app](https://landing-nexo-one.vercel.app/)
 
 ## Tech Stack
 
@@ -16,5 +16,5 @@ Designed with a clean interface and a dark visual style to reflect Nexo's identi
 
 ---
 
-Nexo — Communication, redesigned.  
+**Nexo — Communication, redesigned.**  
 *Chat · Connect · Call · Share*
