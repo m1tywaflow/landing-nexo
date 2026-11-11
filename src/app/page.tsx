@@ -1416,49 +1416,132 @@ function StackSection() {
   );
 }
 
-type Status = 'In progress' | 'Planned' | 'Exploring';
-const ROADMAP: { status: Status; title: string; text: string }[] = [
-  { status: 'In progress', title: 'Faster everywhere', text: 'Virtualized lists and optimized images, so huge chats and channels stay buttery smooth.' },
-  { status: 'In progress', title: 'Calls, upgraded', text: 'Sharper video, steadier connections, and polish on every call screen.' },
-  { status: 'Planned', title: 'Signed desktop installer', text: 'One-click Windows install with no scary security warnings.' },
-  { status: 'Planned', title: 'Screen sharing & group calls', text: 'Share your screen and talk with the whole group at once.' },
-  { status: 'Planned', title: 'Smarter notifications', text: 'Per-chat mute rules and quiet hours, so you hear only what matters.' },
-  { status: 'Exploring', title: 'Mobile apps', text: 'Nexo in your pocket, built natively for your phone.' },
+type Status = 'Shipped' | 'In progress' | 'Planned' | 'Exploring';
+type Filter = 'All' | Status;
+type RoadmapItem = { status: Status; title: string; text: string; tag: string; progress?: number };
+
+const ROADMAP: RoadmapItem[] = [
+  { status: 'Shipped', title: 'Screen sharing', text: 'Show your whole screen or a single window in any call, with one click from the call bar.', tag: 'Calls' },
+  { status: 'Shipped', title: 'Windows desktop app', text: 'Tray icon, native notifications, unread badge, and silent auto-updates.', tag: 'Desktop' },
+  { status: 'Shipped', title: 'Voice notes', text: 'Hold to record, see a live waveform, and replay at 1×, 1.5×, or 2× speed.', tag: 'Messaging' },
+  { status: 'In progress', title: 'Group calls', text: 'Voice and video rooms right inside any group, so everyone can hop in and talk at once.', tag: 'Calls', progress: 35 },
+  { status: 'In progress', title: 'Calls, upgraded', text: 'Sharper video, steadier connections, and polish on every call screen.', tag: 'Calls', progress: 55 },
+  { status: 'In progress', title: 'Faster everywhere', text: 'Virtualized lists and optimized images, so huge chats and channels stay buttery smooth.', tag: 'Performance', progress: 70 },
+  { status: 'Planned', title: 'Search across chats', text: 'Find any message, file, or link in seconds, filtered by person, date, and media type.', tag: 'Messaging' },
+  { status: 'Planned', title: 'Smarter notifications', text: 'Per-chat mute rules and quiet hours, so you hear only what matters.', tag: 'Notifications' },
+  { status: 'Planned', title: 'Scheduled messages', text: 'Write now, send later. Perfect for time zones and channel announcements.', tag: 'Messaging' },
+  { status: 'Planned', title: 'Signed desktop installer', text: 'One-click Windows install with no scary security warnings.', tag: 'Desktop' },
+  { status: 'Exploring', title: 'Secret chats', text: 'Extra-private one-to-one conversations with stricter protection and self-destruct timers.', tag: 'Privacy' },
+  { status: 'Exploring', title: 'Mobile apps', text: 'Nexo in your pocket, built natively for your phone.', tag: 'Platforms' },
 ];
+
+const FILTERS: Filter[] = ['All', 'Shipped', 'In progress', 'Planned', 'Exploring'];
+const STATUSES: Status[] = ['Shipped', 'In progress', 'Planned', 'Exploring'];
 
 function StatusPill({ status }: { status: Status }) {
   const cls =
-    status === 'In progress'
-      ? 'border-[#a996ff] bg-[rgba(124,92,255,0.22)] text-white'
-      : status === 'Planned'
-        ? `${BORDER} text-[#b8b0d6]`
-        : 'border-dashed border-[rgba(168,150,255,0.3)] text-[#7d7599]';
+    status === 'Shipped'
+      ? 'border-[rgba(74,222,128,0.4)] bg-[rgba(74,222,128,0.08)] text-[#4ade80]'
+      : status === 'In progress'
+        ? 'border-[#a996ff] bg-[rgba(124,92,255,0.22)] text-white'
+        : status === 'Planned'
+          ? `${BORDER} text-[#b8b0d6]`
+          : 'border-dashed border-[rgba(168,150,255,0.3)] text-[#7d7599]';
   return (
     <span className={`inline-flex items-center gap-2 rounded-full border px-3 py-1 text-[0.74rem] font-semibold self-start ${cls}`}>
       {status === 'In progress' && <span className="pulse-dot w-1.5 h-1.5 rounded-full bg-[#a996ff]" />}
+      {status === 'Shipped' && <Ico d={P.check} className="w-3 h-3" />}
       {status}
     </span>
   );
 }
 
+function RoadmapCard({ item }: { item: RoadmapItem }) {
+  return (
+    <div className={`stack-chip msg-pop rounded-[20px] border ${BORDER} p-6 flex flex-col gap-4 min-h-[200px]`}>
+      <div className="flex items-center justify-between gap-3">
+        <StatusPill status={item.status} />
+        <span className="text-[0.72rem] text-[#7d7599]">{item.tag}</span>
+      </div>
+      <div>
+        <h3 className="text-[1.08rem] font-semibold mb-2" style={H}>
+          {item.title}
+        </h3>
+        <p className="text-[0.88rem] text-[#b8b0d6] leading-relaxed">{item.text}</p>
+      </div>
+      {item.progress !== undefined && (
+        <div className="mt-auto">
+          <div className="flex items-center justify-between text-[0.72rem] text-[#7d7599] mb-1.5">
+            <span>Progress</span>
+            <span className="text-[#a996ff] font-semibold">{item.progress}%</span>
+          </div>
+          <div
+            role="progressbar"
+            aria-valuenow={item.progress}
+            aria-valuemin={0}
+            aria-valuemax={100}
+            aria-label={`${item.title} progress`}
+            className="h-1.5 w-full rounded-full bg-white/5 overflow-hidden"
+          >
+            <div className="h-full rounded-full bg-[linear-gradient(90deg,#7c5cff,#a996ff)]" style={{ width: `${item.progress}%` }} />
+          </div>
+        </div>
+      )}
+      {item.status === 'Shipped' && (
+        <div className="mt-auto inline-flex items-center gap-1.5 text-[0.76rem] text-[#4ade80]">
+          <span className="w-1.5 h-1.5 rounded-full bg-[#4ade80] shadow-[0_0_8px_#4ade80]" />
+          Available now
+        </div>
+      )}
+    </div>
+  );
+}
+
 function RoadmapSection() {
+  const [filter, setFilter] = useState<Filter>('All');
+
+  const count = (f: Filter) => (f === 'All' ? ROADMAP.length : ROADMAP.filter((i) => i.status === f).length);
+  const visible = filter === 'All' ? ROADMAP : ROADMAP.filter((i) => i.status === filter);
+
   return (
     <section id="roadmap" className="cv px-[min(6vw,90px)] py-[120px]">
       <div className="max-w-[1200px] mx-auto">
-        <Head eyebrow="What's next" title="We're just getting started." text="Nexo ships constantly. Here's a look at what we're building next." />
-        <div className="reveal grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-          {ROADMAP.map((item) => (
-            <div key={item.title} className={`stack-chip rounded-[20px] border ${BORDER} p-6 flex flex-col gap-4 min-h-[190px]`}>
-              <StatusPill status={item.status} />
-              <div>
-                <h3 className="text-[1.08rem] font-semibold mb-2" style={H}>
-                  {item.title}
-                </h3>
-                <p className="text-[0.88rem] text-[#b8b0d6] leading-relaxed">{item.text}</p>
+        <Head eyebrow="What's next" title="We're just getting started." text="Nexo ships constantly. Here's what's already live and what we're building next." />
+
+        <div className="reveal grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+          {STATUSES.map((s) => (
+            <div key={s} className={`rounded-[16px] border ${BORDER} bg-white/[0.02] px-5 py-4`}>
+              <div className="text-[1.6rem] font-bold leading-none mb-1.5" style={H}>
+                {count(s)}
               </div>
+              <div className="text-[0.8rem] text-[#7d7599]">{s}</div>
             </div>
           ))}
         </div>
+
+        <div className="reveal flex flex-wrap gap-2 mb-8" role="tablist" aria-label="Roadmap filter">
+          {FILTERS.map((f) => (
+            <button
+              key={f}
+              type="button"
+              role="tab"
+              aria-selected={filter === f}
+              onClick={() => setFilter(f)}
+              className={`rounded-full border px-4 py-2 text-[0.82rem] font-semibold transition-colors ${filter === f ? 'border-[#a996ff] bg-[rgba(124,92,255,0.25)] text-white' : `${BORDER} text-[#b8b0d6] hover:border-[#a996ff] hover:text-white`
+                }`}
+            >
+              {f}
+              <span className="ml-2 text-[0.72rem] opacity-60">{count(f)}</span>
+            </button>
+          ))}
+        </div>
+
+        <div key={filter} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+          {visible.map((item) => (
+            <RoadmapCard key={item.title} item={item} />
+          ))}
+        </div>
+
         <p className="reveal mt-8 text-[0.82rem] text-[#7d7599]">A roadmap is a direction, not a promise — priorities shift with what you tell us you need.</p>
       </div>
     </section>
